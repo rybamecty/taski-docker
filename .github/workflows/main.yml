@@ -146,6 +146,7 @@ jobs:
         uses: nick-fields/retry@v3
         with:
           max_attempts: 4
+          timeout_minutes: 20
           retry_wait_seconds: 20
           command: |
             docker buildx create --use --name builder || docker buildx use builder
