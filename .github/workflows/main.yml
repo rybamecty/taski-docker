@@ -148,19 +148,28 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Copy SSH key
-        uses: webfactory/ssh-agent@v0.5.4
+      - name: Copy docker-compose.yml via ssh
+        uses: appleboy/scp-action@master
         with:
-          ssh-private-key: ${{ secrets.SSH_KEY_CL }}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          source: "docker-compose.production.yml"
+          target: "taski"
 
-      - name: Add server to known_hosts
-        run: ssh-keyscan ${{ secrets.HOST }} >> ~/.ssh/known_hosts
-
-      - name: Run deploy commands
-        run: |
-          ssh ${{ secrets.USER }}@${{ secrets.HOST }} <<EOF
-            cd taski-docker/
-            sudo docker compose down
-            sudo docker compose pull
-            sudo docker compose up -d
-          EOF
+      - name: Executing remote ssh commands to deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          script: |
+            cd taski
+            sudo docker compose -f docker-compose.production.yml pull
+            sudo docker compose -f docker-compose.production.yml down
+            sudo docker compose -f docker-compose.production.yml up -d
+            sudo docker compose -f docker-compose.production.yml exec backend python manage.py migrate
+            sudo docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic --noinput
+            sudo docker compose -f docker-compose.production.yml exec backend cp -r /app/collected_static/. /backend_static/static/
