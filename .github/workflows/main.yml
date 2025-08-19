@@ -151,7 +151,7 @@ jobs:
       - name: Copy SSH key
         uses: webfactory/ssh-agent@v0.5.4
         with:
-          ssh-private-key: ${{ secrets.SSHKEY }}
+          ssh-private-key: ${{ secrets.SSH_KEY_C }}
 
       - name: Add server to known_hosts
         run: ssh-keyscan ${{ secrets.HOST }} >> ~/.ssh/known_hosts
