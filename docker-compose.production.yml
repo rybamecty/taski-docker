@@ -13,14 +13,14 @@ services:
 
   backend:
     # Заменено image: username/taski_backend → image: donnavi/taski_backend
-    image: donnavi/taski_backend:1.0
+    image: donnavi/taski_backend:latest
     env_file: .env
     volumes:
       - static_volume:/backend_static
 
   frontend:
     # Заменено image: username/taski_frontend → image: donnavi/taski_frontend
-    image: donnavi/taski_frontend:1.0
+    image: donnavi/taski_frontend:latest
     env_file: .env
     command: cp -r /app/build/. /frontend_static/
     volumes:
@@ -28,7 +28,7 @@ services:
 
   gateway:
     # Заменено image: username/taski_gateway → image: donnavi/taski_gateway
-    image: donnavi/taski_gateway:1.0
+    image: donnavi/taski_gateway:latest
     env_file: .env
     volumes:
       - static_volume:/staticfiles/
