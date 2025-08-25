@@ -187,7 +187,6 @@ jobs:
         username: ${{ secrets.USER }}
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.SSH_PASSPHRASE }}
-        source: ".env"
         target: "taski/"
         strip_components: 1
 
